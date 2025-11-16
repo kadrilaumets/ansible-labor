@@ -1,0 +1,45 @@
+---
+- name: "Install and configure Nginx"
+  hosts: webservers
+  become: yes
+  
+  tasks:
+
+    - name: "Update apt cache"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    
+    - name: "Install nginx"
+      apt:
+        name: nginx
+        state: present
+      notify: start nginx
+    
+    - name: "Create custom index page"
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head><title>Ansible Test</title></head>
+          <body>
+            <h1>Deployed by Ansible!</h1>
+            <p>Server: {{ ansible_hostname }}</p>
+            <p>IP: {{ ansible_default_ipv4.address }}</p>
+          </body>
+          </html>
+      notify: restart nginx
+  
+  handlers:
+
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+    
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

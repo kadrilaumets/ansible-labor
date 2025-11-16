@@ -1,0 +1,28 @@
+---
+- name: "Deploy website from template"
+  hosts: webservers
+  become: yes
+  vars:
+    page_title: "IT College Lab"
+    site_name: "Ansible Deployment Test"
+    environment: "Development"
+    show_debug: true
+    services:
+
+      - { name: "Web Server", port: 80 }
+      - { name: "SSH", port: 22 }
+  
+  tasks:
+
+    - name: "Deploy HTML from template"
+      template:
+        src: ../templates/website.html.j2
+        dest: /var/www/html/index.html
+      notify: reload nginx
+  
+  handlers:
+
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
