@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ app_name }}</title>
+</head>
+<body>
+
+  <h1>{{ app_name }}</h1>
+
+  <p>
+    Server: {{ server_name }} <br>
+    Environment: {{ app_environment }}
+  </p>
+
+  {% if debug_mode %}
+  <hr>
+  <h3>Debug info</h3>
+  <p>
+    Hostname: {{ ansible_hostname }} <br>
+    Distribution: {{ ansible_distribution }}
+  </p>
+  {% endif %}
+
+</body>
+</html>

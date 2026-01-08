@@ -1,0 +1,7 @@
+---
+# Süsteemi-spetsiifilised (kasutaja EI TOHIKS muuta)
+nginx_user: "www-data"
+nginx_service: "nginx"
+nginx_config_path: "/etc/nginx"
+nginx_package: "nginx"
+# vars file for nginx

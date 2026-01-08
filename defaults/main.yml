@@ -1,0 +1,18 @@
+---
+# Nginx seaded (kasutaja võib override'ida)
+nginx_workers: "{{ ansible_processor_vcpus | default(2) }}"
+nginx_port: 80
+nginx_root: "/var/www/html"
+nginx_worker_connections: 1024
+
+# Rakenduse seaded
+app_name: "web-app"
+admin_email: "admin@example.com"
+
+# Keskkonna seaded (playbook peaks määrama)
+environment: "unknown"
+server_name: "localhost"
+debug_mode: false
+max_connections: 100
+site_color: "#CCCCCC"
+# defaults file for nginx

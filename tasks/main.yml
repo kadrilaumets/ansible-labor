@@ -1,0 +1,56 @@
+---
+# Package management
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install required packages
+  apt:
+    name:
+      - nginx
+      - python3-passlib
+    state: present
+  notify: start nginx
+
+# Nginx configuration
+- name: Deploy nginx configuration from template
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+    validate: 'nginx -t -c %s'
+  notify: reload nginx
+
+# Security (production only)
+- name: Create htpasswd file for production
+  community.general.htpasswd:
+    path: /etc/nginx/.htpasswd
+    name: "{{ vault_admin_user | default('admin') }}"
+    password: "{{ vault_admin_password }}"
+    owner: root
+    group: www-data
+    mode: 0640
+  when: not debug_mode
+  notify: reload nginx
+
+# Website deployment
+- name: Deploy website from template
+  template:
+    src: index.html.j2
+    dest: "{{ nginx_root }}/index.html"
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+    mode: '0644'
+
+# Service management
+- name: Ensure nginx is started and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: true
+# tasks file for nginx

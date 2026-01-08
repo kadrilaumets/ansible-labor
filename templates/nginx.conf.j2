@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+# Server: {{ server_name }}
+
+user {{ nginx_user }};
+worker_processes auto;
+pid /run/nginx.pid;
+
+events {
+    worker_connections {{ nginx_worker_connections }};
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+{% if debug_mode %}
+    # DEBUG: verbose logging
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log debug;
+{% else %}
+    # PRODUCTION: minimal logging
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log warn;
+{% endif %}
+
+    server {
+        listen {{ nginx_port }};
+        server_name {{ server_name }};
+        root {{ nginx_root }};
+        index index.html;
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+
+{% if not debug_mode %}
+        # Security headers (production only)
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-Content-Type-Options "nosniff" always;
+{% endif %}
+    }
+}
