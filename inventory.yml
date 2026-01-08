@@ -1,0 +1,14 @@
+all:
+  children:
+    webservers:
+      children:
+        production:
+          hosts:
+            web01:
+              ansible_host: 10.0.21.21
+              ansible_user: ansible
+        development:
+          hosts:
+            dev01:
+              ansible_host: 10.0.21.20
+              ansible_user: ansible

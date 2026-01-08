@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ page_title }}</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+        .info-box {
+            background: rgba(255,255,255,0.2);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-box">
+        <h1>{{ site_name }}</h1>
+        <p>Environment: {{ environment }}</p>
+        
+        {% if show_debug %}
+        <h3>Debug Info:</h3>
+        <ul style="text-align: left;">
+            <li>Server: {{ ansible_hostname }}</li>
+            <li>OS: {{ ansible_distribution }}</li>
+            <li>Memory: {{ ansible_memtotal_mb }} MB
+            <li>Deployed: {{ ansible_date_time.iso8601 }}</li>
+        </ul>
+        {% else %}
+        <p>Debug mode disabled</p>
+        {% endif %}
+        
+        <h3>Services:</h3>
+        {% for service in services %}
+        <p>{{ service.name }} on port {{ service.port }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+---
+- name: "Main playbook using includes"
+  hosts: webservers
+  become: yes
+  
+  tasks:
+
+    - name: "Show variables from group_vars"
+      debug:
+        msg: "Company: {{ company }}, Nginx port: {{ nginx_port }}"
+    
+    - name: "Install packages"
+      include_tasks: ../tasks/install_packages.yml

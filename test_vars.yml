@@ -1,0 +1,13 @@
+---
+- name: Test variables
+  hosts: webservers
+  gather_facts: no
+  
+  tasks:
+    - name: Show variables
+      ansible.builtin.debug:
+        msg: |
+          App: {{ app_name }}
+          Server: {{ server_name }}
+          Port: {{ nginx_port }}
+          Debug: {{ debug_mode }}

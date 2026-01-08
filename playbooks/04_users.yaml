@@ -1,0 +1,43 @@
+---
+- name: "User and package management"
+  hosts: webservers
+  become: yes
+  vars:
+    users_to_create:
+
+      - { name: "developer", groups: "www-data", shell: "/bin/bash" }
+      - { name: "tester", groups: "www-data", shell: "/bin/sh" }
+    packages_to_install:
+
+      - htop
+      - curl
+      - wget
+      - git
+  
+  tasks:
+
+    - name: "Install packages"
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages_to_install }}"
+    
+    - name: "Create users"
+      user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        shell: "{{ item.shell }}"
+        state: present
+      loop: "{{ users_to_create }}"
+    
+    - name: "Check if users were created"
+      command: "id {{ item.name }}"
+      loop: "{{ users_to_create }}"
+      register: user_check
+      changed_when: false
+    
+    - name: "Show results"
+      debug:
+        msg: "User {{ item.item.name }} exists with shell {{ item.item.shell }}"
+      loop: "{{ user_check.results }}"
+      when: item.rc == 0

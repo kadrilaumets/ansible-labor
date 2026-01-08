@@ -1,0 +1,24 @@
+---
+- name: "System information gathering"
+  hosts: all
+  gather_facts: yes
+  
+  tasks:
+
+    - name: "Print hostname"
+      debug:
+        msg: "Hostname: {{ ansible_hostname }}"
+    
+    - name: "Print OS info"
+      debug:
+        msg: |
+          OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          IP: {{ ansible_default_ipv4.address }}
+          Memory: {{ ansible_memtotal_mb }} MB
+          CPU cores: {{ ansible_processor_cores }}
+    
+    - name: "Create test directory"
+      file:
+        path: /tmp/ansible-test
+        state: directory
+        mode: '0755'

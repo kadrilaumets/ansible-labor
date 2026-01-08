@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ansible Role: Nginx
 
 Paigaldab ja seadistab Nginx veebiserveri. Toetab mitut keskkonda (dev, staging, prod).
@@ -117,3 +118,6 @@ Author Information
 ------------------
 
 An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+=======
+#Ansible labor
+>>>>>>> 5b1bafdedcb7be85cd27b842523e77b1d60a3c4e
