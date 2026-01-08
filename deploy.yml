@@ -1,0 +1,43 @@
+---
+- name: Deploy Nginx
+  hosts: webservers
+  become: yes
+  gather_facts: yes
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+
+  tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Deploy nginx configuration
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+        validate: "nginx -t -c %s"
+      notify: Reload nginx
+
+    - name: Deploy website
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{ nginx_root }}/index.html"
+        owner: "{{ nginx_user }}"
+        group: "{{ nginx_user }}"
+        mode: '0644'
+
+    - name: Ensure nginx is running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
